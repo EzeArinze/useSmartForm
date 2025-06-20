@@ -1,18 +1,19 @@
 import { z } from "zod";
-import { useSmartForm } from "./core/useSmartForm";
+// import { useSmartForm } from "./core/useSmartForm";
+import { useSmartFormV2 } from "./core/useSmartForm-v2";
 
 const schema = z.object({
   email: z.string().email(),
   name: z.string().min(1, "Name is required"),
-  age: z.number(),
+  age: z.number().min(1, "Age must be greater than 0"),
   isStudent: z.boolean(),
   school: z.string().optional(),
   bio: z.string().min(1, "text area value is required"),
-  mood: z.enum(["happy", "sad"]),
+  mood: z.enum(["Happy", "Sad"]),
 });
 
 export default function MyForm() {
-  const { Form, Field, reset } = useSmartForm({
+  const { Form, Field, reset } = useSmartFormV2({
     schema,
     onSubmit: (data) => handleSubmit(data),
   });
@@ -25,9 +26,6 @@ export default function MyForm() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-100 to-purple-200">
       <div className="shadow-xl rounded-xl p-8 w-full max-w-md">
-        <h2 className="text-2xl font-bold mb-6 text-center text-blue-700">
-          Registration Form
-        </h2>
         <Form>
           <Field name="name" label="Name" placeholder="Enter name" />
           <Field name="age" label="Age" type="number" placeholder="age" />
@@ -35,7 +33,8 @@ export default function MyForm() {
             name="mood"
             label="Select your mood"
             type="select"
-            options={["happy", "sad"]}
+            options={["Happy", "Sad"]}
+            className="w-full"
           />
           <Field
             name="bio"
@@ -44,7 +43,7 @@ export default function MyForm() {
             placeholder="Tell us about yourself"
             rows={1}
           />
-          <div className="flex items-center gap-2 mb-4">
+          <div>
             <Field
               name="isStudent"
               type="checkbox"
@@ -64,7 +63,7 @@ export default function MyForm() {
             placeholder="Enter your email"
           />
           <div className="flex justify-center mt-6">
-            <button className="px-6 py-2 hover:bg-blue-700 transition text-white font-semibold rounded shadow">
+            <button className="bg-primary text-primary-foreground shadow-xs hover:bg-primary/90">
               Submit
             </button>
           </div>
