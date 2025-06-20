@@ -2,6 +2,7 @@ import { z } from "zod";
 import { useSmartForm } from "./core/useSmartForm";
 
 const schema = z.object({
+  email: z.string().email(),
   name: z.string().min(1, "Name is required"),
   age: z.number(),
   isStudent: z.boolean(),
@@ -11,7 +12,7 @@ const schema = z.object({
 });
 
 export default function MyForm() {
-  const { Form, Field, Submit, reset } = useSmartForm({
+  const { Form, Field, reset } = useSmartForm({
     schema,
     onSubmit: (data) => handleSubmit(data),
   });
@@ -28,54 +29,44 @@ export default function MyForm() {
           Registration Form
         </h2>
         <Form>
-          <Field
-            name="name"
-            label="Name"
-            placeholder="Enter name"
-            className="focus:ring-2 focus:ring-blue-400"
-          />
-          <Field
-            name="age"
-            label="Age"
-            type="number"
-            className="focus:ring-2 focus:ring-blue-400"
-          />
+          <Field name="name" label="Name" placeholder="Enter name" />
+          <Field name="age" label="Age" type="number" placeholder="age" />
           <Field
             name="mood"
             label="Select your mood"
             type="select"
             options={["happy", "sad"]}
-            className="border rounded px-3 py-2 w-full"
           />
           <Field
             name="bio"
             label="Bio"
             type="textarea"
-            className="h-24 p-2 border focus:ring-2 focus:ring-blue-400"
-            rows={2}
+            placeholder="Tell us about yourself"
+            rows={1}
           />
           <div className="flex items-center gap-2 mb-4">
             <Field
               name="isStudent"
-              label="Student"
               type="checkbox"
-              className="w-5 h-5 accent-blue-600"
+              checkBoxLabel="Are you a student"
             />
-            <label htmlFor="isStudent" className="text-gray-700 font-medium">
-              Are you a student?
-            </label>
           </div>
           <Field
             name="school"
             label="School"
             type="text"
             showWhen={(values) => values.isStudent}
-            className="focus:ring-2 focus:ring-blue-400"
+          />
+          <Field
+            name="email"
+            label="Email"
+            type="email"
+            placeholder="Enter your email"
           />
           <div className="flex justify-center mt-6">
-            <Submit className="px-6 py-2 bg-blue-600 hover:bg-blue-700 transition text-white font-semibold rounded shadow">
+            <button className="px-6 py-2 hover:bg-blue-700 transition text-white font-semibold rounded shadow">
               Submit
-            </Submit>
+            </button>
           </div>
         </Form>
       </div>
