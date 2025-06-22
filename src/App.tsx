@@ -1,16 +1,7 @@
 import { z } from "zod";
 // import { useSmartForm } from "./core/useSmartForm";
 import { useSmartFormV2 } from "./core/useSmartForm-v2";
-
-const schema = z.object({
-  email: z.string().email(),
-  name: z.string().min(1, "Name is required"),
-  age: z.number().min(1, "Age must be greater than 0"),
-  isStudent: z.boolean(),
-  school: z.string().optional(),
-  bio: z.string().min(1, "text area value is required"),
-  mood: z.enum(["Happy", "Sad"]),
-});
+import { schema } from "./types/types";
 
 export default function MyForm() {
   const { Form, Field, reset } = useSmartFormV2({
@@ -30,11 +21,16 @@ export default function MyForm() {
           <Field name="name" label="Name" placeholder="Enter name" />
           <Field name="age" label="Age" type="number" placeholder="age" />
           <Field
+            name="email"
+            label="Email Address"
+            type="email"
+            placeholder="Enter Email Address"
+          />
+          <Field
             name="mood"
             label="Select your mood"
             type="select"
             options={["Happy", "Sad"]}
-            className="w-full"
           />
           <Field
             name="bio"
@@ -54,13 +50,7 @@ export default function MyForm() {
             name="school"
             label="School"
             type="text"
-            showWhen={(values) => values.isStudent}
-          />
-          <Field
-            name="email"
-            label="Email"
-            type="email"
-            placeholder="Enter your email"
+            showWhen={(value) => value.isStudent}
           />
           <div className="flex justify-center mt-6">
             <button className="bg-primary text-primary-foreground shadow-xs hover:bg-primary/90">
