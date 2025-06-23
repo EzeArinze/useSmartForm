@@ -6,11 +6,11 @@ import { schema } from "./types/types";
 export default function MyForm() {
   const { Form, Field, reset } = useSmartFormV2({
     schema,
-    onSubmit: (data) => handleSubmit(data),
+    onSubmit: (values) => handleSubmit(values),
   });
 
-  function handleSubmit(data: z.infer<typeof schema>) {
-    console.log(data);
+  function handleSubmit(values: z.infer<typeof schema>) {
+    console.log(values);
     reset();
   }
 
@@ -46,16 +46,8 @@ export default function MyForm() {
               checkBoxLabel="Are you a student"
             />
           </div>
-          <Field
-            name="school"
-            label="School"
-            type="text"
-            showWhen={(value) => value.isStudent}
-          />
           <div className="flex justify-center mt-6">
-            <button className="bg-primary text-primary-foreground shadow-xs hover:bg-primary/90">
-              Submit
-            </button>
+            <button className="shadow-xs hover:bg-primary/90">Submit</button>
           </div>
         </Form>
       </div>

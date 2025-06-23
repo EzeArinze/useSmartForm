@@ -18,7 +18,11 @@ type FieldType =
   | "checkbox"
   | "select"
   | "textarea"
-  | "email";
+  | "email"
+  | "file"
+  | "date"
+  | "range"
+  | "radio";
 
 type FieldProps<TFormValues extends FieldValues> = {
   name: Path<TFormValues>;
@@ -28,6 +32,7 @@ type FieldProps<TFormValues extends FieldValues> = {
   options?: string[];
   showWhen?: (values: TFormValues) => boolean;
   className?: string;
+  displayValue?: boolean;
 } & Omit<
   React.InputHTMLAttributes<HTMLInputElement> &
     React.TextareaHTMLAttributes<HTMLTextAreaElement> &
@@ -46,11 +51,15 @@ const styles = {
   checkbox:
     "peer border-input dark:bg-input/30 data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground dark:data-[state=checked]:bg-primary data-[state=checked]:border-primary focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive size-4 shrink-0 rounded-[4px] border shadow-xs transition-shadow outline-none focus-visible:ring-[3px] disabled:cursor-not-allowed disabled:opacity-50",
   select:
-    "border-input data-[placeholder]:text-muted-foreground [&_svg:not([class*='text-'])]:text-muted-foreground focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive dark:bg-input/30 dark:hover:bg-input/50 flex w-fit items-center justify-between gap-2 rounded-md border bg-transparent px-3 py-2 text-sm whitespace-nowrap shadow-xs transition-[color,box-shadow] outline-none focus-visible:ring-[3px] disabled:cursor-not-allowed disabled:opacity-50 data-[size=default]:h-9 data-[size=sm]:h-8 *:data-[slot=select-value]:line-clamp-1 *:data-[slot=select-value]:flex *:data-[slot=select-value]:items-center *:data-[slot=select-value]:gap-2 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
+    "border-input data-[placeholder]:text-muted-foreground [&_svg:not([class*='text-'])]:text-muted-foreground focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive dark:bg-input/30 dark:hover:bg-input/50 flex w-fit items-center justify-between gap-2 rounded-md border bg-transparent px-3 py-2 text-sm whitespace-nowrap shadow-xs transition-[color,box-shadow] outline-none focus-Visible:ring-[3px] disabled:cursor-not-allowed disabled:opacity-50 data-[size=default]:h-9 data-[size=sm]:h-8 *:data-[slot=select-value]:line-clamp-1 *:data-[slot=select-value]:flex *:data-[slot=select-value]:items-center *:data-[slot=select-value]:gap-2 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
   selectValue:
     "flex items-center gap-2 text-sm font-medium text-foreground data-[placeholder]:text-muted-foreground",
   textarea:
     "border-input placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive dark:bg-input/30 flex field-sizing-content min-h-16 w-full rounded-md border bg-transparent px-3 py-2 text-base shadow-xs transition-[color,box-shadow] outline-none focus-visible:ring-[3px] disabled:cursor-not-allowed disabled:opacity-50 md:text-sm",
+  range:
+    "w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700",
+  radio:
+    "border-input text-primary focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive dark:bg-input/30 aspect-square size-4 shrink-0 rounded-full border shadow-xs transition-[color,box-shadow] outline-none focus-visible:ring-[3px] disabled:cursor-not-allowed disabled:opacity-50",
 };
 
 export function useSmartFormV2<TSchema extends ZodTypeAny>(props: {
@@ -88,6 +97,7 @@ export function useSmartFormV2<TSchema extends ZodTypeAny>(props: {
     options,
     showWhen,
     checkBoxLabel,
+    displayValue,
     className,
     ...rest
   }: FieldProps<FormValues>) => {
@@ -109,6 +119,7 @@ export function useSmartFormV2<TSchema extends ZodTypeAny>(props: {
     switch (type) {
       case "email":
       case "text":
+      case "date":
         inputElement = (
           <input
             id={name}
@@ -128,7 +139,7 @@ export function useSmartFormV2<TSchema extends ZodTypeAny>(props: {
         inputElement = (
           <input
             id={name}
-            type="number"
+            type={type}
             {...register(name, { valueAsNumber: true })}
             {...rest}
             className={cn(
@@ -145,7 +156,7 @@ export function useSmartFormV2<TSchema extends ZodTypeAny>(props: {
           <div className="flex items-center gap-2">
             <input
               id={name}
-              type="checkbox"
+              type={type}
               {...register(name)}
               {...rest}
               className={cn(
@@ -178,6 +189,29 @@ export function useSmartFormV2<TSchema extends ZodTypeAny>(props: {
         );
         break;
 
+      case "file":
+        inputElement = (
+          <input
+            id={name}
+            type={type}
+            accept={rest.accept}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+              const file = e.target.files?.[0];
+              if (file) {
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                methods.setValue?.(name, file as any);
+              }
+            }}
+            {...(rest as React.InputHTMLAttributes<HTMLInputElement>)}
+            className={cn(
+              styles.input,
+              hasError && "border-red-500",
+              className
+            )}
+          />
+        );
+        break;
+
       case "select":
         inputElement = options ? (
           <select
@@ -199,6 +233,54 @@ export function useSmartFormV2<TSchema extends ZodTypeAny>(props: {
               </option>
             ))}
           </select>
+        ) : null;
+        break;
+
+      case "range":
+        inputElement = (
+          <div>
+            <input
+              id={name}
+              type={type}
+              {...register(name, { valueAsNumber: true })}
+              {...rest}
+              className={cn(
+                styles.range,
+                hasError && "border-red-500",
+                className
+              )}
+            />
+            {displayValue && (
+              <div className="text-sm text-muted-foreground mt-1">
+                {values[name]}
+              </div>
+            )}
+          </div>
+        );
+        break;
+
+      case "radio":
+        inputElement = options ? (
+          <div className="flex flex-col gap-2">
+            {options.map((opt) => (
+              <label
+                key={opt}
+                className="inline-flex items-center gap-2 text-sm"
+              >
+                <input
+                  type="radio"
+                  value={opt}
+                  {...register(name)}
+                  className={cn(
+                    styles.radio,
+                    hasError && "border-red-500",
+                    className
+                  )}
+                />
+                <span>{opt}</span>
+              </label>
+            ))}
+          </div>
         ) : null;
         break;
 
