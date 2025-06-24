@@ -1,18 +1,11 @@
-import { z } from "zod";
-
-import { useSmartFormV2 } from "./core/useSmartForm-v2";
 import { schema } from "./types/types";
+import useSmartForm from "use-smart-form";
 
 export default function MyForm() {
-  const { Form, Field, reset } = useSmartFormV2({
+  const { Form, Field } = useSmartForm({
     schema,
-    onSubmit: (values) => handleSubmit(values),
+    onSubmit: (values) => console.log(values),
   });
-
-  function handleSubmit(values: z.infer<typeof schema>) {
-    console.log(values);
-    reset();
-  }
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-100 to-purple-200">
@@ -39,13 +32,14 @@ export default function MyForm() {
             placeholder="Tell us about yourself"
             rows={1}
           />
-          <div>
-            <Field
-              name="isStudent"
-              type="checkbox"
-              checkBoxLabel="Are you a student"
-            />
-          </div>
+
+          <Field
+            name="isStudent"
+            type="checkbox"
+            checkBoxLabel="Are you a student"
+          />
+
+          <Field type="file" name="file" accept="image/*, video/*" />
           <div className="flex justify-center mt-6">
             <button className="shadow-xs hover:bg-primary/90">Submit</button>
           </div>

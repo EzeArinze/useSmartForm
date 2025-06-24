@@ -7,6 +7,18 @@ export const schema = z.object({
   isStudent: z.boolean(),
   bio: z.string().min(1, "text area value is required"),
   mood: z.enum(["Happy", "Sad"]),
+  file: z
+    .instanceof(File)
+    .refine((f) => f.size <= 1024 * 1024 * 5, {
+      message: "File size must be 5MB or less",
+    })
+    .refine(
+      (f) =>
+        ["image/jpeg", "image/png", "image/gif", "application/pdf"].includes(
+          f.type
+        ),
+      { message: "Invalid file type" }
+    ),
 });
 
 // school: z.string().optional(),
