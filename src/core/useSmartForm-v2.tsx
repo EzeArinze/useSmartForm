@@ -59,7 +59,7 @@ const styles = {
   range:
     "w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700",
   radio:
-    "border-input text-primary focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive dark:bg-input/30 aspect-square size-4 shrink-0 rounded-full border shadow-xs transition-[color,box-shadow] outline-none focus-visible:ring-[3px] disabled:cursor-not-allowed disabled:opacity-50",
+    "h-4 w-4 text-primary border-muted shadow-sm focus:ring-primary focus:ring-offset-1",
 };
 
 export function useSmartFormV2<TSchema extends ZodTypeAny>(props: {

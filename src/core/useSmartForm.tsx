@@ -173,7 +173,7 @@ export function useSmartForm<TSchema extends ZodTypeAny>(props: {
               )}
             />
             {checkBoxLabel && (
-              <label htmlFor={name} className={styles.checkboxLabel}>
+              <label htmlFor={name} className={styles.label}>
                 {checkBoxLabel}
               </label>
             )}
