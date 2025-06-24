@@ -1,11 +1,10 @@
 import { z } from "zod";
 
-// import { useSmartFormV2 } from "./core/useSmartForm-v2";
+import { useSmartFormV2 } from "./core/useSmartForm-v2";
 import { schema } from "./types/types";
-import { useSmartForm } from "./core/useSmartForm";
 
 export default function MyForm() {
-  const { Form, Field, reset } = useSmartForm({
+  const { Form, Field, reset } = useSmartFormV2({
     schema,
     onSubmit: (values) => handleSubmit(values),
   });
