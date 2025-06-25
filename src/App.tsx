@@ -1,10 +1,15 @@
+import { useSmartForm } from "./core/useSmartForm";
 import { schema } from "./types/types";
-import useSmartForm from "use-smart-form";
+// import useSmartForm from "use-smart-form";
 
 export default function MyForm() {
   const { Form, Field } = useSmartForm({
     schema,
     onSubmit: (values) => console.log(values),
+    defaultValues: {
+      name: "nuel",
+      email: "test@test.com",
+    },
   });
 
   return (
@@ -39,7 +44,7 @@ export default function MyForm() {
             checkBoxLabel="Are you a student"
           />
 
-          <Field type="file" name="file" accept="image/*, video/*" />
+          <Field type="file" name="file" accept="image/*, video/*" multiple />
           <div className="flex justify-center mt-6">
             <button className="shadow-xs hover:bg-primary/90">Submit</button>
           </div>
