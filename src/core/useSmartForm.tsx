@@ -24,7 +24,8 @@ type FieldType =
   | "file"
   | "date"
   | "range"
-  | "radio";
+  | "radio"
+  | "password";
 
 type FieldProps<TFormValues extends FieldValues> = {
   name: Path<TFormValues>;
@@ -120,6 +121,15 @@ export function useSmartForm<TSchema extends ZodTypeAny>(props: {
         <input
           id={name}
           type="email"
+          {...register(name)}
+          {...rest}
+          className={cn(styles.input, hasError && "border-red-500", className)}
+        />
+      ),
+      password: () => (
+        <input
+          id={name}
+          type="password"
           {...register(name)}
           {...rest}
           className={cn(styles.input, hasError && "border-red-500", className)}

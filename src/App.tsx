@@ -1,4 +1,4 @@
-import { useSmartForm } from "./core/useSmartForm";
+import { useSmartForm } from "./core/useSmartForm-new";
 import { schema } from "./types/types";
 // import useSmartForm from "use-smart-form";
 
@@ -7,8 +7,13 @@ export default function MyForm() {
     schema,
     onSubmit: (values) => console.log(values),
     defaultValues: {
-      name: "nuel",
-      email: "test@test.com",
+      name: "",
+      email: "", // Changed from test@test.com to empty string
+      age: 0, // Added default for age
+      password: "", // Added default for password
+      isStudent: false, // Added default for isStudent
+      bio: "", // Added default for bio
+      mood: "Happy", // Added default for mood
     },
   });
 
@@ -18,6 +23,14 @@ export default function MyForm() {
         <Form>
           <Field name="name" label="Name" placeholder="Enter name" />
           <Field name="age" label="Age" type="number" placeholder="age" />
+          <Field name="tel" label="Tel" type="tel" placeholder="tel" />
+          <Field
+            name="password"
+            label="Password"
+            type="password"
+            placeholder="Password"
+          />
+
           <Field
             name="email"
             label="Email Address"

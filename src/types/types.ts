@@ -4,6 +4,9 @@ export const schema = z.object({
   email: z.string().email(),
   name: z.string().min(1, "Name is required"),
   age: z.number().min(1, "Age must be greater than 0"),
+  password: z.coerce
+    .string()
+    .min(6, "Password must be at least 6 characters long"),
   isStudent: z.boolean(),
   bio: z.string().min(1, "text area value is required"),
   mood: z.enum(["Happy", "Sad"]),
@@ -19,6 +22,7 @@ export const schema = z.object({
         ),
       { message: "Invalid file type" }
     ),
+  tel: z.string().optional(),
 });
 
 // school: z.string().optional(),
